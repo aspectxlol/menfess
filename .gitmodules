@@ -1,6 +1,3 @@
 [submodule "server"]
 	path = server
 	url = https://github.com/aspectxlol/menfess_server
-[submodule "frontend"]
-	path = frontend
-	url = https://github.com/aspectxlol/menfess_frontend
