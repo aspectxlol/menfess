@@ -18,5 +18,6 @@ model Message {
   from      String
   to        String
   message   String
+  color     String
   createdAt DateTime @default(now())
 }

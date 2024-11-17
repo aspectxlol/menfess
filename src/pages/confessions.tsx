@@ -6,6 +6,7 @@ export default function Confessions({ data }: InferGetServerSidePropsType<typeof
   return (
     <div>
       <h1 className={'text-3xl font-bold'}>Confessions</h1>
+        <p className={'text-lg'}>back to the <Link href={"/"} className={"underline"}>Homepage</Link>!</p>
         {data.length === 0 && <p className={'text-lg'}>No confessions yet! <Link href={'/'} className={'underline'}>Send One!</Link></p>}
         <div
             className={'grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-1 gap-2'}
@@ -13,7 +14,7 @@ export default function Confessions({ data }: InferGetServerSidePropsType<typeof
             {data.map((message) =>
             {
                 return (
-                    <div key={message.id} className={'flex flex-col justify-between bg- border-2 p-4 rounded-lg w-56'}>
+                    <div key={message.id} className={'flex flex-col justify-between bg- border-2 p-4 rounded-lg w-56'} style={{ backgroundColor: `${message.color}` }}>
                         <p className={'text-lg font-bold'}>{message.message}</p>
                         <p className={'text-sm'}>from {message.from} to {message.to}</p>
                     </div>
@@ -25,7 +26,7 @@ export default function Confessions({ data }: InferGetServerSidePropsType<typeof
   );
 }
 
-export async function getServerSideProps(): Promise<{ props: { data: { message: string, id: string, from: string, to: string, createdAt: string }[] } }> {
+export async function getServerSideProps(): Promise<{ props: { data: { message: string, id: string, from: string, to: string, createdAt: string, color: string }[] } }> {
     const prisma = new PrismaClient();
     await prisma.$connect();
 

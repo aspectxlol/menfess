@@ -11,14 +11,36 @@ export default async function handler(
         res.status(405).json({error: 'Method not allowed'});
         return;
     }
+
+    const myData: { from: string, to: string, message: string, color: string } = JSON.parse(req.body);
+
+    if(!myData.from) {
+        res.status(400).json({error: 'Missing required field: from'});
+        return;
+    }
+    if(!myData.to) {
+        res.status(400).json({error: 'Missing required field: to'});
+        return;
+    }
+    if(!myData.message) {
+        res.status(400).json({error: 'Missing required field: message'});
+        return;
+    }
+    if(!myData.color) {
+        res.status(400).json({error: 'Missing required field: color'});
+        return;
+    }
+
+
     const prisma = new PrismaClient();
     prisma.$connect();
 
     const data = await prisma.message.create({
         data: {
-            from: req.body.from,
-            to: req.body.to,
-            message: req.body.message
+            from: myData.from,
+            to: myData.to,
+            message: myData.message,
+            color: myData.color
         }
     });
 

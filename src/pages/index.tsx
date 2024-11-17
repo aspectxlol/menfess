@@ -1,10 +1,12 @@
-import {useRef} from "react";
+import {useRef, useState} from "react";
 import {toast} from "react-hot-toast";
+import {HexColorPicker} from "react-colorful";
 
 export default function Home() {
   const fromRef = useRef<HTMLInputElement>(null);
   const toRef = useRef<HTMLInputElement>(null);
   const messageRef = useRef<HTMLTextAreaElement>(null);
+  const [Color, setColor] = useState<string>('#000000');
 
   return (
     <div className={'flex flex-col justify-center items-center' }>
@@ -16,6 +18,13 @@ export default function Home() {
           <input type={'text'} placeholder={'To'} className={'main_input'} ref={toRef}/>
         </div>
         <textarea placeholder={'Message'} className={'main_input'} ref={messageRef}/>
+        <div className={'flex flex-row w-full'}>
+            <HexColorPicker className={'w-full mb-10 mr-10'} color={Color} onChange={setColor}/>
+            <div className={'flex flex-col'}>
+                <p>Color: <span className={'text-sm'}>{Color}</span></p>
+                <div className={`p-10 rounded-xl`} style={{ backgroundColor: `${Color}` }}>Preview</div>
+            </div>
+        </div>
         <button type={'submit'} className={'main_submit'}
                 onClick={() => {
                   if (!fromRef.current?.value || !toRef.current?.value || !messageRef.current?.value) {
@@ -26,17 +35,25 @@ export default function Home() {
                   fetch('/api/confess/send', {
                     method: 'POST',
                     headers: {
-                      'Content-Type': 'application/json',
+                      // 'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
                       from: fromRef.current?.value,
                       to: toRef.current?.value,
-                      message: messageRef.current?.value
+                      message: messageRef.current?.value,
+                      color: Color,
                     })
-                  }).then(res => res.json()).then(() => {
+                  }).then(res => res.json()).then((data) => {
+                    if (data.error) {
+                      toast.error(data.error);
+                      return;
+                    }
                     toast.success('Successfully sent message');
                     window.location.href = `/sent`;
-                  })
+                  }).catch(err => {
+                    console.error(err);
+                    toast.error('Something went wrong');
+                  });
                 }}
         >
           Send
